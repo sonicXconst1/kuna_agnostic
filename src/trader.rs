@@ -4,8 +4,14 @@ pub struct Trader<TConnector> {
 }
 
 impl<TConnector> Trader<TConnector> {
-    pub fn new() -> Trader<TConnector> {
-        unimplemented!()
+    pub fn new(
+        private_client: std::sync::Arc<kuna_sdk::client::KunaClient<TConnector>>,
+        public_client: std::sync::Arc<kuna_sdk::public::KunaPublicClient<TConnector>>,
+    ) -> Trader<TConnector> {
+        Trader {
+            private_client,
+            public_client
+        }
     }
 }
 
