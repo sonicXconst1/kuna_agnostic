@@ -71,7 +71,7 @@ where
                         amount: currency.available,
                         held: currency.full - currency.available,
                     },
-                    None => return Err("Failed to find currency in balance".to_owned()),
+                    None => return Err(format!("Failed to find currency in balance: {:#?} {:#?}", kuna_first_coin, first_coin)),
             };
             let kuna_second_coin = converter.from_agnostic_coin(second_coin.clone());
             let second_currency = match balance.iter()
@@ -81,7 +81,7 @@ where
                         amount: currency.available,
                         held: currency.full - currency.available,
                     },
-                    None => return Err("Failed to find currency in balance".to_owned()),
+                    None => return Err(format!("Failed to find currency in balance: {:#?} {:#?}", kuna_second_coin, second_coin)),
             };
             Ok((first_currency, second_currency))
         };
