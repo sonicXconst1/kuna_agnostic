@@ -43,7 +43,7 @@ where
                         amount: currency.available,
                         held: currency.full - currency.available,
                     }),
-                    None => Err("Failed to find currency in balance".to_owned()),
+                    None => Err(format!("Failed to find currency in balance: {:#?} {:#?}", kuna_coin, coin)),
             }
         };
         Box::pin(future)
