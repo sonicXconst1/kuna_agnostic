@@ -62,6 +62,7 @@ where
                 Ok(balance) => balance,
                 Err(error) => return Err(error),
             };
+            log::info!("Balance: {:#?}", balance);
             let converter = convert::CoinConverter::default();
             let kuna_first_coin = converter.from_agnostic_coin(first_coin.clone());
             let first_currency = match balance.iter()
