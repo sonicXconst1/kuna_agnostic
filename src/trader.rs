@@ -3,6 +3,12 @@ pub struct Trader<TConnector> {
     public_client: std::sync::Arc<kuna_sdk::public::KunaPublicClient<TConnector>>,
 }
 
+impl<TConnector> Trader<TConnector> {
+    pub fn new() -> Trader<TConnector> {
+        unimplemented!()
+    }
+}
+
 impl<TConnector> agnostic::market::Trader for Trader<TConnector>
 where
     TConnector: hyper::client::connect::Connect + Send + Sync + Clone + 'static,

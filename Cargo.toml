@@ -11,4 +11,5 @@ agnostic = { git = "https://github.com/sonicxconst1/agnostic.git", branch="maste
 kuna_sdk = { git = "https://github.com/sonicxconst1/kuna_sdk.git", branch="master" }
 futures = { version = "0.*" }
 hyper = { version = "0.*", features = ["client"] }
+url = { version = "*" }
 log = { versio = "0.*" }
