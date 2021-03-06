@@ -41,8 +41,9 @@ where
     ) -> agnostic::market::Future<Result<agnostic::order::Order, String>> {
         let public_client = self.public_client.clone();
         let future = async move {
-            let orders = get_all_orders(public_client, trading_pair.clone(), 1).await?;
-            log::info!("Pair: {:#?} Orders: {:#?}", trading_pair, orders);
+            let orders = get_all_orders(public_client, trading_pair, 1)
+                .await
+                .expect("Failed to get orders.");
             orders.into_iter()
                 .nth(0)
                 .map_or(Err("No orders found".to_owned()), |order| Ok(order))
@@ -100,13 +101,15 @@ where
             }
         },
     };
-    Ok(orders.into_iter()
+    let orders = orders.into_iter()
         .take(count as usize)
         .map(|order| agnostic::order::Order {
             trading_pair: trading_pair.clone(),
             price: order.price,
             amount: order.amount,
         })
-        .collect())
+        .collect();
+    log::info!("Pair: {:#?} Orders: {:#?}", trading_pair, orders);
+    Ok(orders)
 }
 
