@@ -83,20 +83,20 @@ where
         trading_pair::Target::Market => {
             match trading_pair.side {
                 trading_pair::Side::Buy => {
-                    order_book.bids
+                    order_book.asks
                 },
                 trading_pair::Side::Sell => {
-                    order_book.asks
+                    order_book.bids
                 },
             }
         },
         trading_pair::Target::Limit => {
             match trading_pair.side {
                 trading_pair::Side::Buy => {
-                    order_book.asks
+                    order_book.bids
                 },
                 trading_pair::Side::Sell => {
-                    order_book.bids
+                    order_book.asks
                 },
             }
         },
