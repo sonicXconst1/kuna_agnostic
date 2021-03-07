@@ -63,16 +63,20 @@ where
 {
     use crate::convert;
     use agnostic::trading_pair::TradingPairConverter;
-    use agnostic::trading_pair::Target;
     let converter = convert::CoinConverter::default();
     let kuna_symbol = converter.to_pair(order.trading_pair.clone());
+    use agnostic::trading_pair::Target;
     let target = match order.trading_pair.target {
         Target::Limit => kuna_sdk::base::Target::Limit,
         Target::Market => kuna_sdk::base::Target::Market,
     };
+    use agnostic::trading_pair::Side;
     let create_order = kuna_sdk::models::CreateOrder {
         symbol: kuna_symbol.to_string(),
-        amount: order.amount,
+        amount: match order.trading_pair.side {
+            Side::Buy => order.amount,
+            Side::Sell => -order.amount,
+        },
         price: order.price,
         order_type: target.to_string(),
     };
