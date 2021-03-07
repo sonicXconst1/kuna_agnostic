@@ -30,9 +30,7 @@ where
             client,
             auth_context.base_url.clone()));
         let accountant = accountant::Accountant::new(private_client.clone());
-        let trader = trader::Trader::new(
-            private_client.clone(),
-            public_client.clone());
+        let trader = trader::Trader::new(private_client.clone());
         let sniffer = sniffer::Sniffer::new(
             private_client.clone(),
             public_client.clone());

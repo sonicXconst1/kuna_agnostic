@@ -12,4 +12,4 @@ kuna_sdk = { git = "https://github.com/sonicxconst1/kuna_sdk.git", branch="maste
 futures = { version = "0.*" }
 hyper = { version = "0.*", features = ["client"] }
 url = { version = "*" }
-log = { versio = "0.*" }
+log = { version = "0.*" }
