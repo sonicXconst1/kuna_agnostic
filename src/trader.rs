@@ -82,7 +82,7 @@ where
     };
     match private_client.create_order(create_order).await {
         Ok(result) => {
-            log::debug!("{}", result);
+            log::debug!("{:#?}", result);
             Ok(())
         },
         Err(error) => Err(error),
