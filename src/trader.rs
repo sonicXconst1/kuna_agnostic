@@ -1,3 +1,6 @@
+use agnostic::trade::{Trade, TradeResult};
+use agnostic::order::{Order, OrderWithId};
+
 pub struct Trader<TConnector> {
     private_client: std::sync::Arc<kuna_sdk::client::KunaClient<TConnector>>,
 }
@@ -19,27 +22,8 @@ where
     fn create_order(
         &self,
         order: agnostic::order::Order
-    ) -> agnostic::market::Future<Result<(), String>> {
+    ) -> agnostic::market::Future<Result<Trade, String>> {
         let future = create_order(self.private_client.clone(), order);
-        Box::pin(future)
-    }
-
-    fn delete_and_create(
-        &self,
-        id: &str,
-        new_order: agnostic::order::Order,
-    ) -> agnostic::market::Future<Result<String, String>> {
-        let private_client = self.private_client.clone();
-        let id = id.to_owned();
-        let future = async move {
-            match delete_order(private_client.clone(), id).await {
-                Ok(_) => match create_order(private_client.clone(), new_order).await {
-                    Ok(_) => Ok("delete and create finished".to_owned()),
-                    Err(error) => Err(error),
-                },
-                Err(error) => return Err(error),
-            }
-        };
         Box::pin(future)
     }
 
@@ -47,23 +31,19 @@ where
         let future = delete_order(self.private_client.clone(), id.to_owned());
         Box::pin(future)
     }
-
-    fn create_trade_from_order(&self, order: agnostic::order::Order) -> agnostic::market::Future<Result<(), String>> {
-        let future = create_order(self.private_client.clone(), order);
-        Box::pin(future)
-    }
 }
 
 async fn create_order<TConnector>(
     private_client: std::sync::Arc<kuna_sdk::client::KunaClient<TConnector>>,
     order: agnostic::order::Order,
-) -> Result<(), String> 
+) -> Result<Trade, String> 
 where
     TConnector: hyper::client::connect::Connect + Send + Sync + Clone + 'static
 {
     use crate::convert;
     use agnostic::trading_pair::TradingPairConverter;
     let converter = convert::CoinConverter::default();
+    let trading_pair = order.trading_pair.clone();
     let kuna_symbol = converter.to_pair(order.trading_pair.clone());
     use agnostic::trading_pair::Target;
     let target = match order.trading_pair.target {
@@ -80,11 +60,23 @@ where
         price: order.price,
         order_type: target.to_string(),
     };
+    let price = order.price;
+    let amount = order.amount;
     match private_client.create_order(create_order).await {
-        Ok(result) => {
-            log::debug!("{:#?}", result);
-            Ok(())
-        },
+        Ok(result) => Ok(match order.trading_pair.target {
+            Target::Market => Trade::Market(TradeResult {
+                id: result.id.to_string(),
+                trading_pair,
+                price,
+                amount,
+            }),
+            Target::Limit => Trade::Limit(OrderWithId {
+                id: result.id.to_string(),
+                trading_pair,
+                price,
+                amount,
+            }),
+        }),
         Err(error) => Err(error),
     }
 }
