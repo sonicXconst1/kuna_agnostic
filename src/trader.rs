@@ -1,5 +1,5 @@
 use agnostic::trade::{Trade, TradeResult};
-use agnostic::order::{Order, OrderWithId};
+use agnostic::order::OrderWithId;
 
 pub struct Trader<TConnector> {
     private_client: std::sync::Arc<kuna_sdk::client::KunaClient<TConnector>>,
@@ -67,7 +67,7 @@ where
             Target::Market => Trade::Market(TradeResult {
                 id: result.id.to_string(),
                 trading_pair,
-                price,
+                price: result.price,
                 amount,
             }),
             Target::Limit => Trade::Limit(OrderWithId {

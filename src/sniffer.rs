@@ -39,10 +39,10 @@ where
         &self,
         trading_pair: agnostic::trading_pair::TradingPair,
     ) -> agnostic::market::Future<Result<Vec<agnostic::order::OrderWithId>, String>> {
-        let private_client = self.private_client.clone();
+        let _private_client = self.private_client.clone();
         let future = async move {
             let converter = convert::CoinConverter::default();
-            let kuna_pair = converter.to_pair(trading_pair.clone());
+            let _kuna_pair = converter.to_pair(trading_pair.clone());
             unimplemented!()
         };
         Box::pin(future)
