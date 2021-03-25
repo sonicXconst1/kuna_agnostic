@@ -39,11 +39,19 @@ where
         &self,
         trading_pair: agnostic::trading_pair::TradingPair,
     ) -> agnostic::market::Future<Result<Vec<agnostic::order::OrderWithId>, String>> {
-        let _private_client = self.private_client.clone();
+        let private_client = self.private_client.clone();
         let future = async move {
             let converter = convert::CoinConverter::default();
-            let _kuna_pair = converter.to_pair(trading_pair.clone());
-            unimplemented!()
+            let kuna_pair = converter.to_pair(trading_pair.clone());
+            let raw_orders = private_client.get_my_orders(kuna_pair).await?;
+            Ok(raw_orders.into_iter()
+                .map(|order| agnostic::order::OrderWithId {
+                    id: order.id.to_string(),
+                    trading_pair: trading_pair.clone(),
+                    price: order.price,
+                    amount: order.initial_amount.abs() - order.executed_amount.abs(),
+                })
+                .collect())
         };
         Box::pin(future)
     }
