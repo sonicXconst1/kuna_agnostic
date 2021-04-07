@@ -67,7 +67,7 @@ where
             Target::Market => Trade::Market(TradeResult {
                 id: result.id.to_string(),
                 trading_pair,
-                price: result.price,
+                price: result.price.map_or(price, |price| price),
                 amount,
             }),
             Target::Limit => Trade::Limit(OrderWithId {

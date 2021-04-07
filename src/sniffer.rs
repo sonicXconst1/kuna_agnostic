@@ -48,7 +48,7 @@ where
                 .map(|order| agnostic::order::OrderWithId {
                     id: order.id.to_string(),
                     trading_pair: trading_pair.clone(),
-                    price: order.price,
+                    price: order.price.expect("Price could not be null here!"),
                     amount: order.initial_amount.abs() - order.executed_amount.abs(),
                 })
                 .collect())
