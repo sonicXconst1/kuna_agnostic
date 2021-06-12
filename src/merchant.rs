@@ -46,7 +46,7 @@ impl<TConnector> agnostic::merchant::Merchant for Merchant<TConnector>
 where
     TConnector: hyper::client::connect::Connect + Send + Sync + Clone + 'static,
 { 
-    fn id() -> &'static str {
+    fn id(&self) -> &'static str {
         "Kuna"
     }
 
