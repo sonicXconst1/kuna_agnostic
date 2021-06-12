@@ -45,7 +45,11 @@ where
 impl<TConnector> agnostic::merchant::Merchant for Merchant<TConnector>
 where
     TConnector: hyper::client::connect::Connect + Send + Sync + Clone + 'static,
-{
+{ 
+    fn id() -> &'static str {
+        "Kuna"
+    }
+
     fn accountant(&self) -> std::sync::Arc<dyn agnostic::market::Accountant> {
         self.accountant.clone()
     }
