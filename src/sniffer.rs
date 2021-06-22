@@ -45,6 +45,11 @@ where
             let kuna_pair = converter.to_pair(trading_pair.clone());
             let raw_orders = private_client.get_my_orders(kuna_pair).await?;
             Ok(raw_orders.into_iter()
+                .filter(|order| match (order.side, trading_pair.side) {
+                    (kuna_sdk::base::Side::Sell, trading_pair::Side::Sell) => true,
+                    (kuna_sdk::base::Side::Buy, trading_pair::Side::Buy) => true,
+                    _ => false,
+                })
                 .map(|order| agnostic::order::OrderWithId {
                     id: order.id.to_string(),
                     trading_pair: trading_pair.clone(),
